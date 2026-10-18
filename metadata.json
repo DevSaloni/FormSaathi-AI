@@ -1,0 +1,9 @@
+{
+  "name": "FormSaathi AI — Your Voice Guide to Forms",
+  "description": "Accessible multilingual AI voice and visual guide for citizen application forms in Marathi, Hindi, and English.",
+  "requestFramePermissions": [
+    "microphone",
+    "camera"
+  ],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
