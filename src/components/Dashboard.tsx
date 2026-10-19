@@ -35,6 +35,7 @@ import { sampleForms } from '../data/sampleForms';
 import { useApp, DashboardTab } from '../context/AppContext';
 
 import { supportedCertificates } from '../data/certificateData';
+import { FormSaathiLogo } from './FormSaathiLogo';
 
 interface DashboardProps {
   onBackToLanding: () => void;
@@ -145,22 +146,13 @@ export const Dashboard: React.FC<DashboardProps> = ({
       <aside className="hidden lg:flex flex-col w-72 bg-white border-r border-[#E2EAE3] shrink-0 h-screen sticky top-0 z-30 justify-between">
         <div className="p-5 space-y-6 overflow-y-auto">
           {/* Logo */}
-          <div className="space-y-1">
+          <div>
             <button
               onClick={() => setDashboardTab('home')}
-              className="flex items-center gap-3 text-left cursor-pointer group"
+              className="text-left cursor-pointer group focus:outline-hidden"
+              aria-label="FormSaathi AI Home"
             >
-              <div className="w-10 h-10 rounded-xl bg-[#16834A] flex items-center justify-center text-white shadow-xs group-hover:bg-[#105C38] transition-colors">
-                <FileText className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <span className="text-lg font-extrabold tracking-tight text-[#17231C]">
-                  FormSaathi <span className="text-[#16834A]">AI</span>
-                </span>
-                <span className="block text-[10px] font-semibold text-[#105C38] tracking-wider uppercase">
-                  Voice Guide to Forms
-                </span>
-              </div>
+              <FormSaathiLogo size="md" tagline={t.tagline} />
             </button>
           </div>
 
@@ -246,23 +238,23 @@ export const Dashboard: React.FC<DashboardProps> = ({
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top Header */}
-        <header className="sticky top-0 z-20 bg-white/95 backdrop-blur-md border-b border-[#E2EAE3] px-4 sm:px-8 py-3.5 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+        <header className="sticky top-0 z-20 bg-white/95 backdrop-blur-md border-b border-[#E2EAE3] px-3 sm:px-8 py-2.5 sm:py-3.5 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             {/* Mobile Hamburger Toggle */}
             <button
               onClick={() => setMobileSidebarOpen(true)}
-              className="lg:hidden p-2 rounded-xl text-[#17231C] hover:bg-[#F0F8F2] border border-[#E2EAE3] cursor-pointer"
+              className="lg:hidden p-1.5 sm:p-2 rounded-xl text-[#17231C] hover:bg-[#F0F8F2] border border-[#E2EAE3] cursor-pointer shrink-0"
               aria-label="Open navigation menu"
             >
-              <Menu className="w-5 h-5" />
+              <Menu className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
 
-            <span className="font-extrabold text-sm sm:text-base text-[#17231C]">
+            <span className="font-extrabold text-xs sm:text-base text-[#17231C] truncate max-w-[120px] xs:max-w-[180px] sm:max-w-none">
               {navItems.find((n) => n.id === dashboardTab)?.label}
             </span>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
             {/* New Session Button */}
             <button
               onClick={() => setShowConfirmStartOver(true)}
@@ -274,11 +266,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
             </button>
 
             {/* Language Quick Switcher */}
-            <div className="flex items-center bg-[#F0F8F2] rounded-xl p-1 border border-[#E2EAE3] text-xs font-bold text-[#105C38]">
-              <Globe className="w-3.5 h-3.5 text-[#16834A] ml-2 mr-1 hidden sm:block" />
+            <div className="flex items-center bg-[#F0F8F2] rounded-xl p-0.5 sm:p-1 border border-[#E2EAE3] text-[11px] sm:text-xs font-bold text-[#105C38]">
+              <Globe className="w-3.5 h-3.5 text-[#16834A] ml-1.5 mr-1 hidden md:block" />
               <button
                 onClick={() => setSelectedLanguage('mr')}
-                className={`px-2 py-1 rounded-lg transition-all cursor-pointer ${
+                className={`px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg transition-all cursor-pointer ${
                   selectedLanguage === 'mr' ? 'bg-[#16834A] text-white' : 'hover:bg-white/60'
                 }`}
               >
@@ -286,7 +278,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
               </button>
               <button
                 onClick={() => setSelectedLanguage('hi')}
-                className={`px-2 py-1 rounded-lg transition-all cursor-pointer ${
+                className={`px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg transition-all cursor-pointer ${
                   selectedLanguage === 'hi' ? 'bg-[#16834A] text-white' : 'hover:bg-white/60'
                 }`}
               >
@@ -294,7 +286,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
               </button>
               <button
                 onClick={() => setSelectedLanguage('en')}
-                className={`px-2 py-1 rounded-lg transition-all cursor-pointer ${
+                className={`px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg transition-all cursor-pointer ${
                   selectedLanguage === 'en' ? 'bg-[#16834A] text-white' : 'hover:bg-white/60'
                 }`}
               >
@@ -588,15 +580,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
           <div className="relative w-72 bg-white h-full shadow-2xl flex flex-col justify-between p-5 z-10">
             <div className="space-y-6">
               <div className="flex items-center justify-between pb-3 border-b border-[#E2EAE3]">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-[#16834A] flex items-center justify-center text-white">
-                    <FileText className="w-4 h-4" />
-                  </div>
-                  <span className="font-bold text-base text-[#17231C]">FormSaathi AI</span>
-                </div>
+                <FormSaathiLogo size="sm" showText={true} />
                 <button
                   onClick={() => setMobileSidebarOpen(false)}
                   className="p-1.5 rounded-lg text-[#68756C] hover:bg-[#F0F8F2] cursor-pointer"
+                  aria-label="Close navigation"
                 >
                   <X className="w-5 h-5" />
                 </button>

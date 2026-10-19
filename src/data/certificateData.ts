@@ -2559,6 +2559,28 @@ export const supportedCertificates: Record<string, CertificateData> = {
         isOfficiallyVerified: true,
         checked: false,
       },
+      {
+        id: 'sc_passport_photos',
+        title: {
+          en: 'Two Recent Passport-Size Photographs',
+          hi: 'दो नवीन पासपोर्ट साइज फोटो',
+          mr: 'दोन अलीकडील पासपोर्ट आकाराचे फोटो',
+        },
+        description: {
+          en: 'Printed on the physical Senior Citizen Identity Card.',
+          hi: 'वरिष्ठ नागरिक पहचान पत्र पर मुद्रण हेतु।',
+          mr: 'भौतिक ओळखपत्रावर मुद्रणासाठी.',
+        },
+        whyNeeded: {
+          en: 'Physical ID card printing.',
+          hi: 'पहचान पत्र हेतु।',
+          mr: 'ओळखपत्र तयार करण्यासाठी.',
+        },
+        category: 'identity',
+        requirementType: 'required',
+        isOfficiallyVerified: true,
+        checked: false,
+      },
     ],
     stages: [
       {
@@ -2717,6 +2739,28 @@ export const supportedCertificates: Record<string, CertificateData> = {
           mr: 'शासकीय ओळख पडताळणीसाठी.',
         },
         category: 'proof',
+        requirementType: 'required',
+        isOfficiallyVerified: true,
+        checked: false,
+      },
+      {
+        id: 'dis_residence_proof',
+        title: {
+          en: 'Local Residence Proof (Ration Card / Electricity Bill)',
+          hi: 'स्थानीय निवास प्रमाण (राशन कार्ड / बिजली बिल)',
+          mr: 'स्थानिक वास्तव्याचा पुरावा (रेशन कार्ड / लाईट बिल)',
+        },
+        description: {
+          en: 'Determines the district Civil Hospital and Medical Board jurisdiction.',
+          hi: 'जिला सिविल अस्पताल और मेडिकल बोर्ड कार्यक्षेत्र निर्धारण हेतु।',
+          mr: 'जिल्हा शासकीय रुग्णालय व वैद्यकीय मंडळ अधिकारक्षेत्रासाठी.',
+        },
+        whyNeeded: {
+          en: 'Hospital jurisdiction mapping.',
+          hi: 'अस्पताल कार्यक्षेत्र हेतु।',
+          mr: 'रुग्णालय कार्यक्षेत्र निश्चितीसाठी.',
+        },
+        category: 'address',
         requirementType: 'required',
         isOfficiallyVerified: true,
         checked: false,
@@ -2883,6 +2927,28 @@ export const supportedCertificates: Record<string, CertificateData> = {
         isOfficiallyVerified: true,
         checked: false,
       },
+      {
+        id: 'pcc_institution_letter',
+        title: {
+          en: 'Employer / College Requisition Letter (Demand Letter)',
+          hi: 'नियोक्ता या संस्थान का चरित्र प्रमाण पत्र मांग पत्र',
+          mr: 'कंपनी किंवा शैक्षणिक संस्थेचे मागणी पत्र (Demand Letter)',
+        },
+        description: {
+          en: 'States the official purpose of requiring police character clearance.',
+          hi: 'चरित्र प्रमाण पत्र किस उद्देश्य से चाहिए, इसका आधिकारिक पत्र।',
+          mr: 'पोलीस पडताळणी दाखला कशासाठी हवा आहे त्याचे अधिकृत पत्र.',
+        },
+        whyNeeded: {
+          en: 'Purpose justification.',
+          hi: 'उद्देश्य प्रमाण हेतु।',
+          mr: 'कारणाचा पुरावा.',
+        },
+        category: 'proof',
+        requirementType: 'conditional',
+        isOfficiallyVerified: true,
+        checked: false,
+      },
     ],
     stages: [
       {
@@ -3041,6 +3107,28 @@ export const supportedCertificates: Record<string, CertificateData> = {
           mr: 'बँक खात्याची पडताळणी.',
         },
         category: 'identity',
+        requirementType: 'required',
+        isOfficiallyVerified: true,
+        checked: false,
+      },
+      {
+        id: 'frm_8a_extract',
+        title: {
+          en: 'Digitally Signed 8-A Land Holding Extract (डिजिटल ८-अ खाते उतारा)',
+          hi: 'डिजिटल ८-अ खाता खतौनी (समस्त भूमि विवरण)',
+          mr: 'डिजिटल ८-अ खाते उतारा (mahabhumi.gov.in)',
+        },
+        description: {
+          en: 'Proves cumulative agricultural landholding across all survey numbers.',
+          hi: 'सभी सर्वे नंबरों में कुल भूमि रकबा सिद्ध करता है।',
+          mr: 'गावातील सर्व गटांमधील एकूण शेतजमिनीची नोंद दाखवणारा उतारा.',
+        },
+        whyNeeded: {
+          en: 'Small/marginal farmer categorization.',
+          hi: 'सीमांत/लघु कृषक निर्धारण हेतु।',
+          mr: 'अल्पभूधारक प्रमाणपत्र पात्रतेसाठी आवश्यक.',
+        },
+        category: 'proof',
         requirementType: 'required',
         isOfficiallyVerified: true,
         checked: false,

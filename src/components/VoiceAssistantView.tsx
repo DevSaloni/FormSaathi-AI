@@ -32,6 +32,8 @@ import {
 
 import { CertificateIndicatorBanner } from './CertificateIndicatorBanner';
 import { supportedCertificates } from '../data/certificateData';
+import { ChatMessageRenderer } from './ChatMessageRenderer';
+import { getClientCivicFallback } from '../data/fallbackKnowledge';
 
 interface VoiceAssistantViewProps {
   initialQuestion?: string;
@@ -233,95 +235,8 @@ export const VoiceAssistantView: React.FC<VoiceAssistantViewProps> = ({
     } catch (err: any) {
       console.warn('Chat request failed, providing high quality local answer:', err);
 
-      // Deterministic fallback response in requested language
-      let fallbackText = '';
-      const q = textToSend.toLowerCase();
-
-      if (q.includes('आय') || q.includes('income') || q.includes('उत्पन्न')) {
-        if (selectedLanguage === 'hi') {
-          fallbackText = `नमस्ते! आय प्रमाण पत्र (Income Certificate) बनवाने के लिए मुख्य चरण निम्नलिखित हैं:
-
-1. **आवश्यक दस्तावेज:**
-   - आवेदक का आधार कार्ड (सक्रिय मोबाइल नंबर लिंक होना चाहिए)
-   - राशन कार्ड की स्व-सत्यापित प्रति (परिवार के सदस्यों के नाम सहित)
-   - निवास प्रमाण: हाल ही का बिजली बिल या नगरपालिका/ग्राम पंचायत कर रसीद
-   - पटवारी / लेखपाल आय जांच आख्या (ग्रामीण क्षेत्रों में) या वेतन पर्ची
-   - पासपोर्ट साइज रंगीन फोटो और स्व-घोषणा पत्र (Self Declaration)
-
-2. **आवेदन कैसे करें:**
-   - **ऑनलाइन:** अपने राज्य के ई-डिस्ट्रिक्ट पोर्टल (जैसे UP e-District, ServicePlus: serviceonline.gov.in) पर नागरिक लॉगिन से आवेदन करें।
-   - **ऑफलाइन:** नजदीकी जन सेवा केंद्र (CSC Center) या तहसील कार्यालय के लोक सेवा केंद्र पर जाएं।
-
-3. **समय और सरकारी शुल्क:**
-   - सामान्यतः १० से १५ कार्य दिवसों में प्रमाण पत्र जारी होता है।
-   - सरकारी प्रक्रिया शुल्क लगभग ₹३० से ₹३५ होता है।
-
-**सावधानी:** कभी भी किसी अनधिकृत व्यक्ति या फर्जी वेबसाइट को पैसे न दें, और बैंक पासवर्ड या ओटीपी कभी साझा न करें।`;
-        } else if (selectedLanguage === 'mr') {
-          fallbackText = `नमस्कार! उत्पन्नाचा दाखला (Income Certificate) काढण्यासाठी खालील पायऱ्या फॉलो करा:
-
-१. **आवश्यक कागदपत्रे गोळा करा:**
-   - अर्जदाराचे आधार कार्ड (मोबाईल नंबर लिंक असलेले)
-   - रेशन कार्डची सत्यप्रत (१२ अंकी आरसी नंबर व सर्व सदस्यांची नावे)
-   - रहिवासी पुरावा: मागील ३ महिन्यांतील लाईट बिल किंवा घरपट्टी पावती
-   - तलाठी यांचा उत्पन्न चौकशी अहवाल (किंवा ग्रामसेवक अहवाल)
-   - पासपोर्ट साईज फोटो आणि विहित नमुन्यातील स्वयंघोषणापत्र
-
-२. **अर्ज कुठे करावा:**
-   - **ऑनलाइन:** महाराष्ट्र शासनाच्या 'आपले सरकार' पोर्टलवर (aaplesarkar.mahaonline.gov.in) नागरिक नोंदणी करून अर्ज करा.
-   - **ऑफलाइन:** जवळच्या सेतू सुविधा केंद्र किंवा आपले सरकार सेवा केंद्रावर जाऊन कागदपत्रे जमा करा.
-
-३. **कालावधी व शासकीय शुल्क:**
-   - दाखला मिळण्याचा कायदेशीर कालावधी १५ दिवस असतो.
-   - शासकीय शुल्क फक्त ₹ ३३.६०/- आहे.
-
-**महत्त्वाची सूचना:** फॉर्मसाथी हे एक स्वतंत्र मदतनीस साधन आहे. दाखल्यासाठी फक्त अधिकृत आपले सरकार पोर्टल किंवा सेतू केंद्राचाच वापर करा.`;
-        } else {
-          fallbackText = `Hello! Here is the verified step-by-step procedure to apply for an Income Certificate:
-
-1. **Assemble Required Supporting Documents:**
-   - Applicant Aadhaar Card (linked to an active mobile phone for OTP)
-   - True Copy of Ration Card (showing family members & head of family)
-   - Residential Address Proof: Recent electricity bill or property tax receipt
-   - Local Revenue Officer / Talathi / Patwari Income Verification Report
-   - Recent passport-size photograph & signed Self-Declaration Form
-
-2. **How to Apply:**
-   - **Online:** Apply via your state's official citizen portal (e.g., Aaple Sarkar in Maharashtra, ServicePlus in multi-state jurisdictions, or state e-District portals).
-   - **In-Person:** Visit your nearest authorized Common Service Center (CSC), Setu Suvidha Kendra, or Tahsil Revenue Counter.
-
-3. **Timeline & Processing Fee:**
-   - Typically issued within 15 working days.
-   - Standard official processing fee is approximately ₹30 to ₹35.
-
-**Safety Caution:** Always use authenticated portals ending in .gov.in. Never share banking credentials, OTPs, or pay unauthorized middleman agents.`;
-        }
-      } else if (q.includes('राशन') || q.includes('रेशन') || q.includes('ration')) {
-        if (selectedLanguage === 'hi') {
-          fallbackText = `राशन कार्ड में नए सदस्य का नाम जोड़ने के लिए:
-1. आवश्यक दस्तावेज: बच्चे के लिए जन्म प्रमाण पत्र और आधार; विवाहित महिला के लिए विवाह प्रमाण पत्र, आधार और मायके के राशन कार्ड से नाम कटने का प्रमाण (Deletion Certificate)।
-2. वर्तमान मूल राशन कार्ड साथ रखें।
-3. अपने नजदीकी खाद्य आपूर्ति विभाग या जन सेवा केंद्र (CSC) पर फॉर्म-बी भरें।`;
-        } else if (selectedLanguage === 'mr') {
-          fallbackText = `रेशन कार्डमध्ये नवीन नाव समाविष्ट करण्यासाठी:
-१. बाळ असल्यास जन्म दाखला व आधार कार्ड; सून असल्यास विवाह नोंदणी दाखला व माहेरच्या रेशन कार्डमधून नाव वगळल्याचा दाखला.
-२. मूळ रेशन कार्ड आणि अर्जदाराचे आधार कार्ड.
-३. तहसीलदार कार्यालय किंवा अन्नधान्य वितरण अधिकारी कार्यालयात नमुना-ब अर्ज सादर करावा.`;
-        } else {
-          fallbackText = `To add a family member to your Ration Card:
-1. Gather documents: Birth certificate & Aadhaar for children; Marriage registration & Parent deletion certificate for newly married spouse.
-2. Original Ration Card copy.
-3. Submit Form B at your local Tahsildar / Food & Civil Supplies office or state portal.`;
-        }
-      } else {
-        if (selectedLanguage === 'hi') {
-          fallbackText = `नमस्ते! फॉर्मसाथी AI आपकी सहायता के लिए तैयार है। सरकारी प्रमाण पत्र या योजनाओं के लिए सबसे पहले पहचान प्रमाण (आधार कार्ड), निवास प्रमाण (बिजली बिल/राशन कार्ड) और आय संबंधी दस्तावेज तैयार रखें। इसके बाद अपने राज्य के अधिकृत ई-डिस्ट्रिक्ट पोर्टल या नजदीकी सीएससी केंद्र पर आवेदन करें। आप मुझसे किसी विशिष्ट फॉर्म (जैसे आय, जाति, राशन) के बारे में पूछ सकते हैं।`;
-        } else if (selectedLanguage === 'mr') {
-          fallbackText = `नमस्कार! फॉर्मसाथी AI आपल्या सेवेत आहे. कोणत्याही सरकारी दाखल्यासाठी ओळख पुरावा (आधार कार्ड), पत्ता पुरावा (लाईट बिल/रेशन कार्ड) आणि उत्पन्नाचे पुरावे तयार ठेवा. त्यानंतर आपले सरकार पोर्टल किंवा जवळच्या सेतू केंद्रावर अर्ज करा. तुम्हाला कोणत्या विशिष्ट दाखल्याबद्दल मदत हवी आहे ते विचारा.`;
-        } else {
-          fallbackText = `Hello! FormSaathi AI is here to guide you. For citizen certificates and applications, always assemble your identity proof (Aadhaar), address proof (utility bill/ration card), and relevant income or category proofs. Then apply through the official state portal or local Common Service Center. What specific certificate can I help you with?`;
-        }
-      }
+      // Deterministic encyclopedic fallback response in requested language
+      const fallbackText = getClientCivicFallback(textToSend, selectedLanguage);
 
       const botMsg: ChatMessage = {
         id: `bot_${Date.now()}`,
@@ -552,99 +467,161 @@ export const VoiceAssistantView: React.FC<VoiceAssistantViewProps> = ({
       )}
 
       {/* Main Conversation Container */}
-      <div className="bg-white rounded-3xl border border-[#E2EAE3] shadow-xs flex flex-col h-[520px] overflow-hidden">
+      <div className="bg-white rounded-3xl border border-[#E2EAE3] shadow-xs flex flex-col h-[560px] sm:h-[620px] overflow-hidden">
+        {/* Chat Container Pro Header */}
+        <div className="bg-[#FAFCFA] border-b border-[#E2EAE3] px-4 py-2.5 flex items-center justify-between text-xs">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="font-bold text-[#105C38] flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-[#16834A]" />
+              {selectedLanguage === 'mr'
+                ? 'फॉर्मसाथी अधिकृत व्हॉइस व चॅट मार्गदर्शक'
+                : selectedLanguage === 'hi'
+                ? 'फॉर्मसाथी आधिकारिक वॉयस व चैट गाइड'
+                : 'FormSaathi Verified Civic Assistant'}
+            </span>
+          </div>
+          <div className="flex items-center gap-2 text-[11px] text-[#68756C]">
+            <span className="hidden sm:inline bg-white px-2 py-0.5 rounded border border-[#E2EAE3]">
+              RTS 2026 Rules Verified
+            </span>
+            <span className="bg-[#F0F8F2] text-[#16834A] font-medium px-2 py-0.5 rounded border border-[#16834A]/20">
+              ⚡ 24x7 Active
+            </span>
+          </div>
+        </div>
+
         {/* Messages Scroll Area */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
-          {activeConversation.messages.map((msg) => {
-            const isUser = msg.sender === 'user';
-            const isSpeaking = currentlySpeakingId === msg.id;
-            return (
-              <div
-                key={msg.id}
-                className={`flex gap-3 ${isUser ? 'justify-end' : 'justify-start'}`}
-              >
-                {!isUser && (
-                  <div className="w-8 h-8 rounded-xl bg-[#16834A] text-white flex items-center justify-center shrink-0 text-xs font-bold shadow-xs">
-                    FS
-                  </div>
-                )}
-
-                <div
-                  className={`max-w-[85%] sm:max-w-[75%] rounded-2xl p-4 text-sm leading-relaxed space-y-2 shadow-xs ${
-                    isUser
-                      ? 'bg-[#16834A] text-white rounded-tr-xs'
-                      : 'bg-[#FAFCFA] text-[#17231C] border border-[#E2EAE3] rounded-tl-xs'
-                  }`}
-                >
-                  <p className="whitespace-pre-wrap">{msg.text}</p>
-
-                  {/* Audio Controls for Bot Message */}
-                  {!isUser && (
-                    <div className="flex items-center justify-between pt-1 text-xs border-t border-[#E2EAE3]/60">
-                      <span className="text-[10px] text-[#68756C] font-medium">
-                        FormSaathi AI • {msg.language === 'mr' ? 'मराठी' : msg.language === 'hi' ? 'हिंदी' : 'English'}
-                      </span>
-                      <button
-                        onClick={() => handleSpeakMessage(msg)}
-                        className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold cursor-pointer transition-colors ${
-                          isSpeaking
-                            ? 'bg-rose-100 text-rose-800 animate-pulse'
-                            : 'text-[#105C38] hover:bg-[#F0F8F2]'
-                        }`}
-                      >
-                        {isSpeaking ? (
-                          <>
-                            <VolumeX className="w-3.5 h-3.5" />
-                            <span>{t.voice.stopVoice}</span>
-                          </>
-                        ) : (
-                          <>
-                            <Volume2 className="w-3.5 h-3.5" />
-                            <span>{t.voice.replay}</span>
-                          </>
-                        )}
-                      </button>
-                    </div>
-                  )}
-                </div>
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5">
+          {/* Welcoming Empty State Hero if no messages */}
+          {activeConversation.messages.length === 0 && (
+            <div className="my-auto py-6 px-4 text-center max-w-lg mx-auto space-y-4 animate-fade-in">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#105C38] via-[#16834A] to-[#22C55E] text-white flex items-center justify-center mx-auto shadow-md">
+                <Sparkles className="w-8 h-8 text-emerald-100" />
               </div>
-            );
-          })}
-
-          {/* AI Thinking Animation */}
-          {isAiThinking && (
-            <div className="flex gap-3 justify-start items-center">
-              <div className="w-8 h-8 rounded-xl bg-[#16834A] text-white flex items-center justify-center shrink-0 text-xs font-bold">
-                FS
-              </div>
-              <div className="bg-[#FAFCFA] border border-[#E2EAE3] rounded-2xl px-4 py-3 text-xs text-[#68756C] flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-[#16834A] animate-ping" />
-                <span>
+              <div className="space-y-1.5">
+                <h3 className="text-lg sm:text-xl font-bold text-[#17231C]">
                   {selectedLanguage === 'mr'
-                    ? 'फॉर्मसाथी उत्तर तयार करत आहे...'
+                    ? 'नमस्कार! मी फॉर्मसाथी AI आहे'
                     : selectedLanguage === 'hi'
-                    ? 'फॉर्मसाथी उत्तर तैयार कर रहा है...'
-                    : 'FormSaathi is preparing guidance...'}
-                </span>
+                    ? 'नमस्ते! मैं फॉर्मसाथी AI हूँ'
+                    : 'Hello! I am FormSaathi AI'}
+                </h3>
+                <p className="text-xs sm:text-sm text-[#68756C] leading-relaxed">
+                  {selectedLanguage === 'mr'
+                    ? 'सरकारी दाखले, कागदपत्रे, लाडकी बहीण योजना, ७/१२ उतारा आणि रेशन कार्डबद्दल कोणताही प्रश्न विचारा — बोलून किंवा टाईप करून.'
+                    : selectedLanguage === 'hi'
+                    ? 'सरकारी प्रमाण पत्र, दस्तावेज, लाडकी बहिन योजना, ७/१२ खतौनी और राशन कार्ड के बारे में कोई भी प्रश्न पूछें — बोलकर या लिखकर।'
+                    : 'Ask any question about government certificates, supporting documents, welfare schemes, 7/12 land records, or ration card.'}
+                </p>
+              </div>
+
+              {/* Starter Quick Actions */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-left pt-2">
+                {[
+                  {
+                    icon: '📜',
+                    q:
+                      selectedLanguage === 'mr'
+                        ? 'उत्पन्नाचा दाखला काढण्यासाठी कोणती कागदपत्रे लागतात?'
+                        : selectedLanguage === 'hi'
+                        ? 'आय प्रमाण पत्र के लिए कौन-से दस्तावेज चाहिए?'
+                        : 'What documents are needed for an Income Certificate?',
+                  },
+                  {
+                    icon: '🌸',
+                    q:
+                      selectedLanguage === 'mr'
+                        ? 'माझी लाडकी बहीण योजनेसाठी कोणती कागदपत्रे लागतात?'
+                        : selectedLanguage === 'hi'
+                        ? 'माझी लाडकी बहिन योजना के नियम व दस्तावेज क्या हैं?'
+                        : 'What are the rules and documents for Ladki Bahin Yojana?',
+                  },
+                  {
+                    icon: '🌾',
+                    q:
+                      selectedLanguage === 'mr'
+                        ? 'डिजिटल स्वाक्षरीत ७/१२ उतारा ऑनलाइन कसा काढायचा?'
+                        : selectedLanguage === 'hi'
+                        ? 'डिजिटल ७/१२ खतौनी ऑनलाइन कैसे निकालें?'
+                        : 'How to download digitally signed 7/12 land extract?',
+                  },
+                  {
+                    icon: '🪪',
+                    q:
+                      selectedLanguage === 'mr'
+                        ? 'रेशन कार्डमध्ये नवीन नाव समाविष्ट कसे करावे?'
+                        : selectedLanguage === 'hi'
+                        ? 'राशन कार्ड में नए सदस्य का नाम कैसे जोड़ें?'
+                        : 'How to add a new family member to Ration Card?',
+                  },
+                ].map((item, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => handleSendMessage(item.q)}
+                    className="p-3 rounded-xl bg-[#FAFCFA] hover:bg-[#F0F8F2] border border-[#E2EAE3] hover:border-[#16834A]/40 text-xs text-[#17231C] font-medium transition-all cursor-pointer flex items-start gap-2 text-left shadow-2xs group"
+                  >
+                    <span className="text-base">{item.icon}</span>
+                    <span className="flex-1 line-clamp-2">{item.q}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Formatted Messages */}
+          {activeConversation.messages.map((msg) => (
+            <ChatMessageRenderer
+              key={msg.id}
+              message={msg}
+              isSpeaking={currentlySpeakingId === msg.id}
+              onToggleSpeech={() => handleSpeakMessage(msg)}
+              onSelectFollowUp={(q) => handleSendMessage(q)}
+              currentLanguage={selectedLanguage}
+            />
+          ))}
+
+          {/* AI Thinking Animation - Pro Design */}
+          {isAiThinking && (
+            <div className="flex gap-3 justify-start items-start animate-fade-in">
+              <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-[#105C38] via-[#16834A] to-[#22C55E] text-white flex items-center justify-center shrink-0 shadow-xs border border-white/20 mt-1">
+                <Sparkles className="w-5 h-5 text-emerald-100 animate-spin" style={{ animationDuration: '3s' }} />
+              </div>
+              <div className="bg-white border border-[#E2EAE3] rounded-2xl rounded-tl-xs px-4 py-3.5 shadow-2xs space-y-2 max-w-[85%]">
+                <div className="flex items-center gap-2 text-xs font-semibold text-[#105C38]">
+                  <span className="w-2 h-2 rounded-full bg-[#16834A] animate-ping" />
+                  <span>
+                    {selectedLanguage === 'mr'
+                      ? 'फॉर्मसाथी अधिकृत नियम व कागदपत्रे पडताळत आहे...'
+                      : selectedLanguage === 'hi'
+                      ? 'फॉर्मसाथी आधिकारिक नियम एवं दस्तावेज जांच रहा है...'
+                      : 'FormSaathi is verifying official rules and documents...'}
+                  </span>
+                </div>
+                {/* Skeleton shimmer bars */}
+                <div className="space-y-1.5 w-48 sm:w-64 pt-1">
+                  <div className="h-2 bg-[#F0F8F2] rounded-full animate-pulse w-full" />
+                  <div className="h-2 bg-[#F0F8F2] rounded-full animate-pulse w-3/4" />
+                </div>
               </div>
             </div>
           )}
 
           {/* Live recognized speech indicator */}
           {isRecording && (
-            <div className="p-3 rounded-2xl bg-[#F0F8F2] border border-[#16834A]/40 text-xs text-[#105C38] flex items-center justify-between animate-pulse">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-rose-600 animate-ping" />
+            <div className="p-3.5 rounded-2xl bg-gradient-to-r from-[#F0F8F2] to-[#E2F0E5] border border-[#16834A]/40 text-xs text-[#105C38] flex items-center justify-between animate-pulse shadow-xs">
+              <div className="flex items-center gap-2.5">
+                <span className="w-3 h-3 rounded-full bg-rose-600 animate-ping" />
                 <span className="font-bold">{t.voice.micListening}</span>
                 {recognizedInterimText && (
-                  <span className="italic truncate max-w-[200px] sm:max-w-md">
+                  <span className="italic truncate max-w-[200px] sm:max-w-md font-medium text-[#17231C]">
                     &quot;{recognizedInterimText}&quot;
                   </span>
                 )}
               </div>
               <button
                 onClick={toggleRecording}
-                className="text-xs font-bold text-rose-700 underline cursor-pointer"
+                className="text-xs font-bold text-rose-700 bg-white px-2.5 py-1 rounded-lg border border-rose-200 hover:bg-rose-50 cursor-pointer"
               >
                 {t.voice.micStop}
               </button>
@@ -655,7 +632,7 @@ export const VoiceAssistantView: React.FC<VoiceAssistantViewProps> = ({
         </div>
 
         {/* Input Bar with Direct Language Selector & Large Mic Button */}
-        <div className="p-4 bg-[#FAFCFA] border-t border-[#E2EAE3] space-y-3">
+        <div className="p-3.5 sm:p-4 bg-[#FAFCFA] border-t border-[#E2EAE3] space-y-3">
           {/* Permission Alert & Helper */}
           {micError && (
             <div className="text-xs text-amber-950 bg-amber-50 p-3.5 rounded-2xl border border-amber-200 space-y-2 animate-fade-in">
@@ -758,7 +735,7 @@ export const VoiceAssistantView: React.FC<VoiceAssistantViewProps> = ({
                 onChange={(e) => setInputText(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                 placeholder={t.voice.inputPlaceholder}
-                className="w-full text-sm bg-white border border-[#CBD5E1] rounded-2xl px-4 py-3 text-[#17231C] placeholder-[#94A3B8] focus:border-[#16834A] focus:outline-hidden pr-12"
+                className="w-full text-sm bg-white border border-[#CBD5E1] rounded-2xl px-4 py-3 text-[#17231C] placeholder-[#94A3B8] focus:border-[#16834A] focus:outline-hidden pr-12 shadow-2xs"
               />
               <button
                 onClick={() => handleSendMessage()}
@@ -774,13 +751,18 @@ export const VoiceAssistantView: React.FC<VoiceAssistantViewProps> = ({
         </div>
       </div>
 
-      {/* Suggested Questions Section */}
-      <div className="space-y-3">
-        <h4 className="text-xs font-bold text-[#68756C] uppercase tracking-wider flex items-center gap-1.5">
-          <HelpCircle className="w-3.5 h-3.5 text-[#16834A]" />
-          <span>{t.voice.suggestedQuestionsTitle}</span>
-        </h4>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+      {/* Suggested Questions Section with Comprehensive Civic Topics */}
+      <div className="space-y-3 pt-2">
+        <div className="flex items-center justify-between">
+          <h4 className="text-xs font-bold text-[#68756C] uppercase tracking-wider flex items-center gap-1.5">
+            <HelpCircle className="w-3.5 h-3.5 text-[#16834A]" />
+            <span>{t.voice.suggestedQuestionsTitle}</span>
+          </h4>
+          <span className="text-[11px] text-[#16834A] font-semibold bg-[#F0F8F2] px-2 py-0.5 rounded-full border border-[#16834A]/20">
+            {selectedLanguage === 'mr' ? 'क्लिक करून विचारा' : selectedLanguage === 'hi' ? 'क्लिक करके पूछें' : 'Tap to Ask'}
+          </span>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
           {starterQuestions.map((sq, idx) => (
             <button
               key={idx}
@@ -796,3 +778,4 @@ export const VoiceAssistantView: React.FC<VoiceAssistantViewProps> = ({
     </div>
   );
 };
+
